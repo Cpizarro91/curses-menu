@@ -2,8 +2,13 @@ import curses
 import os
 import platform
 import threading
+#from log import log
 
-
+foreground_color = curses.COLOR_RED
+background_color = curses.COLOR_GREEN
+highlight_foreground_color = curses.COLOR_BLUE
+highlight_background_color = curses.COLOR_YELLOW
+names = []
 class CursesMenu(object):
     """
     A class that displays a menu and allows the user to select an option
@@ -38,6 +43,7 @@ class CursesMenu(object):
         self.screen = None
         self.highlight = None
         self.normal = None
+        self.color = None
 
         self.title = title
         self.subtitle = subtitle
@@ -92,6 +98,7 @@ class CursesMenu(object):
         :param MenuItem item: The item to be added
         """
         did_remove = self.remove_exit()
+        self.append_itemnames(item)
         item.menu = self
         self.items.append(item)
         if did_remove:
@@ -206,6 +213,7 @@ class CursesMenu(object):
         for index, item in enumerate(self.items):
             if self.current_option == index:
                 text_style = self.highlight
+
             else:
                 text_style = self.normal
             self.screen.addstr(5 + index, 4, item.show(index), text_style)
@@ -287,7 +295,8 @@ class CursesMenu(object):
             self.go_up()
         elif user_input == ord("\n"):
             self.select()
-
+        #append to string, catch input in else and keep that updated, compare this to names list
+        #curses.echo to output text
         return user_input
 
     def go_to(self, option):
@@ -342,9 +351,10 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
-        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
-        self.highlight = curses.color_pair(1)
-        self.normal = curses.A_NORMAL
+        curses.init_pair(1, foreground_color, background_color)
+        curses.init_pair(2, highlight_foreground_color, highlight_background_color)
+        self.highlight = curses.color_pair(2)
+        self.normal = curses.color_pair(1)
 
     def clear_screen(self):
         """
@@ -352,13 +362,21 @@ class CursesMenu(object):
         """
         self.screen.clear()
 
+    def append_itemnames(self, item):
+        names.append(item.text)
+        #return
+
+    def get_namesarray(self):
+        #log.info(names)
+        return names
+
 
 class MenuItem(object):
     """
     A generic menu item
     """
 
-    def __init__(self, text, menu=None, should_exit=False):
+    def __init__(self, text,menu=None, should_exit=False):
         """
         :ivar str text: The text shown for this menu item
         :ivar CursesMenu menu: The menu to which this item belongs
@@ -385,7 +403,11 @@ class MenuItem(object):
         :return: The representation of the item to be shown in a menu
         :rtype: str
         """
-        return "%d - %s" % (index + 1, self.text)
+        #log.info("self.text before: ", self.text)
+        #curses.init_pair(1, foreground_color, background_color)
+        #self.text = curses.color_pair(1)
+        #log.info("self.text after: ", self.text)
+        return "%d - %s" % (index + 1, self.text) #self.color
 
     def set_up(self):
         """
