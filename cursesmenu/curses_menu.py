@@ -2,10 +2,9 @@ import curses
 import os
 import platform
 import threading
-#from log import log
 
-foreground_color = curses.COLOR_RED
-background_color = curses.COLOR_GREEN
+text_foreground_color = curses.COLOR_RED
+text_background_color = curses.COLOR_GREEN
 highlight_foreground_color = curses.COLOR_BLUE
 highlight_background_color = curses.COLOR_YELLOW
 names = []
@@ -351,7 +350,7 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
-        curses.init_pair(1, foreground_color, background_color)
+        curses.init_pair(1, text_foreground_color, text_background_color)
         curses.init_pair(2, highlight_foreground_color, highlight_background_color)
         self.highlight = curses.color_pair(2)
         self.normal = curses.color_pair(1)
