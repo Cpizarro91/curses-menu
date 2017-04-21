@@ -363,10 +363,8 @@ class CursesMenu(object):
 
     def append_itemnames(self, item):
         names.append(item.text)
-        #return
 
     def get_namesarray(self):
-        #log.info(names)
         return names
 
 
@@ -402,11 +400,7 @@ class MenuItem(object):
         :return: The representation of the item to be shown in a menu
         :rtype: str
         """
-        #log.info("self.text before: ", self.text)
-        #curses.init_pair(1, foreground_color, background_color)
-        #self.text = curses.color_pair(1)
-        #log.info("self.text after: ", self.text)
-        return "%d - %s" % (index + 1, self.text) #self.color
+        return "%d - %s" % (index + 1, self.text)
 
     def set_up(self):
         """
