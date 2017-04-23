@@ -4,6 +4,7 @@ import platform
 import threading
 
 
+
 class CursesMenu(object):
     """
     A class that displays a menu and allows the user to select an option
@@ -287,7 +288,9 @@ class CursesMenu(object):
             self.go_up()
         elif user_input == ord("\n"):
             self.select()
-
+        elif user_input == ord("x") or ord("X"):
+            self.current_item.multi_selection_item.item_selected()
+            self.draw()
         return user_input
 
     def go_to(self, option):
@@ -328,7 +331,10 @@ class CursesMenu(object):
         self.selected_item.set_up()
         self.selected_item.action()
         self.selected_item.clean_up()
-        self.returned_value = self.selected_item.get_return()
+        if self.multiSelection():
+            self.returned_value = self.multi_selection_item.add_selections()
+        else:
+            self.returned_value = self.selected_item.get_return()
         self.should_exit = self.selected_item.should_exit
 
         if not self.should_exit:
@@ -351,6 +357,11 @@ class CursesMenu(object):
         Clear the screen belonging to this menu
         """
         self.screen.clear()
+
+    @staticmethod
+    def multiSelection():
+        return False
+
 
 
 class MenuItem(object):
