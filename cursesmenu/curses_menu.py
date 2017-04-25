@@ -3,11 +3,13 @@ import os
 import platform
 import threading
 
-text_foreground_color = curses.COLOR_RED
-text_background_color = curses.COLOR_GREEN
+font_background_color = curses.COLOR_BLACK
 highlight_foreground_color = curses.COLOR_BLUE
 highlight_background_color = curses.COLOR_YELLOW
 names = []
+filter_string_array = []
+filter_string = ""
+filter_on = False
 class CursesMenu(object):
     """
     A class that displays a menu and allows the user to select an option
@@ -42,7 +44,7 @@ class CursesMenu(object):
         self.screen = None
         self.highlight = None
         self.normal = None
-        self.color = None
+        #self.color = None
 
         self.title = title
         self.subtitle = subtitle
@@ -189,6 +191,8 @@ class CursesMenu(object):
         if scr is not None:
             CursesMenu.stdscr = scr
         self.screen = curses.newpad(len(self.items) + 6, CursesMenu.stdscr.getmaxyx()[1])
+        curses.initscr()
+        curses.start_color()
         self._set_up_colors()
         curses.curs_set(0)
         CursesMenu.stdscr.refresh()
@@ -196,13 +200,12 @@ class CursesMenu(object):
         CursesMenu.currently_active_menu = self
         self._running.set()
         while self._running.wait() is not False and not self.should_exit:
-            self.process_user_input()
+            user_input = self.process_user_input()
 
     def draw(self):
         """
         Redraws the menu and refreshes the screen. Should be called whenever something changes that needs to be redrawn.
         """
-
         self.screen.border(0)
         if self.title is not None:
             self.screen.addstr(2, 2, self.title, curses.A_STANDOUT)
@@ -214,7 +217,7 @@ class CursesMenu(object):
                 text_style = self.highlight
 
             else:
-                text_style = self.normal
+                text_style = curses.color_pair(item.get_foreground_text_color())
             self.screen.addstr(5 + index, 4, item.show(index), text_style)
 
         screen_rows, screen_cols = CursesMenu.stdscr.getmaxyx()
@@ -294,8 +297,7 @@ class CursesMenu(object):
             self.go_up()
         elif user_input == ord("\n"):
             self.select()
-        #append to string, catch input in else and keep that updated, compare this to names list
-        #curses.echo to output text
+
         return user_input
 
     def go_to(self, option):
@@ -350,10 +352,16 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
-        curses.init_pair(1, text_foreground_color, text_background_color)
-        curses.init_pair(2, highlight_foreground_color, highlight_background_color)
-        self.highlight = curses.color_pair(2)
-        self.normal = curses.color_pair(1)
+        curses.init_pair(1, highlight_foreground_color, highlight_background_color)
+        curses.init_pair(2, curses.COLOR_RED, font_background_color)
+        curses.init_pair(3, curses.COLOR_GREEN, font_background_color)
+        curses.init_pair(4, curses.COLOR_YELLOW, font_background_color)
+        curses.init_pair(5, curses.COLOR_BLUE, font_background_color)
+        curses.init_pair(6, curses.COLOR_MAGENTA, font_background_color)
+        curses.init_pair(7, curses.COLOR_CYAN, font_background_color)
+        curses.init_pair(8, curses.COLOR_WHITE, font_background_color)
+        self.highlight = curses.color_pair(1)
+        self.normal = curses.A_NORMAL
 
     def clear_screen(self):
         """
@@ -373,12 +381,13 @@ class MenuItem(object):
     A generic menu item
     """
 
-    def __init__(self, text,menu=None, should_exit=False):
+    def __init__(self, text_color, text, menu=None, should_exit=False):
         """
         :ivar str text: The text shown for this menu item
         :ivar CursesMenu menu: The menu to which this item belongs
         :ivar bool should_exit: Whether the menu should exit once this item's action is done
         """
+        self.text_color = text_color
         self.text = text
         self.menu = menu
         self.should_exit = should_exit
@@ -400,7 +409,7 @@ class MenuItem(object):
         :return: The representation of the item to be shown in a menu
         :rtype: str
         """
-        return "%d - %s" % (index + 1, self.text)
+        return "%d - %s" % (index + 1, self.text) #self.color
 
     def set_up(self):
         """
@@ -427,14 +436,33 @@ class MenuItem(object):
         """
         return self.menu.returned_value
 
+    def get_foreground_text_color(self):
+        if self.text_color == "RED":
+            return 2
+        elif self.text_color == "GREEN":
+            return 3
+        elif self.text_color == "YELLOW":
+            return 4
+        elif self.text_color == "BLUE":
+            return 5
+        elif self.text_color == "MAGENTA":
+            return 6
+        elif self.text_color == "CYAN":
+            return 7
+        elif self.text_color == "WHITE":
+            return 8
+        else:
+            return 8
+
 
 class ExitItem(MenuItem):
     """
     Used to exit the current menu. Handled by :class:`cursesmenu.CursesMenu`
     """
 
-    def __init__(self, text="Exit", menu=None):
-        super(ExitItem, self).__init__(text=text, menu=menu, should_exit=True)
+    def __init__(self, text_color = "WHITE", text="Exit", menu=None):
+        super(ExitItem, self).__init__(text=text, text_color = text_color,
+                                       menu=menu, should_exit=True)
 
     def show(self, index):
         """
