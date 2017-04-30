@@ -1,17 +1,18 @@
-import abc
 import curses
 import os
 import platform
 import threading
+import abc
+#from log import log
 
-font_background_color = curses.COLOR_BLACK
+
+font_background_color = curses.COLOR_CYAN
 highlight_foreground_color = curses.COLOR_BLUE
 highlight_background_color = curses.COLOR_YELLOW
 names = []
 filter_string_array = []
 filter_string = ""
 filter_on = False
-
 
 class CursesMenu(object):
     """
@@ -47,7 +48,7 @@ class CursesMenu(object):
         self.screen = None
         self.highlight = None
         self.normal = None
-        # self.color = None
+        #self.color = None
 
         self.title = title
         self.subtitle = subtitle
@@ -194,8 +195,6 @@ class CursesMenu(object):
         if scr is not None:
             CursesMenu.stdscr = scr
         self.screen = curses.newpad(len(self.items) + 6, CursesMenu.stdscr.getmaxyx()[1])
-        curses.initscr()
-        curses.start_color()
         self._set_up_colors()
         curses.curs_set(0)
         CursesMenu.stdscr.refresh()
@@ -203,13 +202,23 @@ class CursesMenu(object):
         CursesMenu.currently_active_menu = self
         self._running.set()
         while self._running.wait() is not False and not self.should_exit:
-            user_input = self.process_user_input()
+            self.process_user_input()
 
     def draw(self):
         """
         Redraws the menu and refreshes the screen. Should be called whenever something changes that needs to be redrawn.
         """
         self.screen.border(0)
+        if filter_on:
+            for index, item in enumerate(self.items):
+                if item.text == filter_string:
+                    filtered_item = self.items[index]
+                    exit_item = self.items.pop()
+                    del self.items[:]
+                    self.items.append(filtered_item)
+                    self.items.append(exit_item)
+                    self.clear_screen()
+
         if self.title is not None:
             self.screen.addstr(2, 2, self.title, curses.A_STANDOUT)
         if self.subtitle is not None:
@@ -284,29 +293,58 @@ class CursesMenu(object):
         """
         return CursesMenu.stdscr.getch()
 
-    # add user input here for multiSelect
     def process_user_input(self):
         """
         Gets the next single character and decides what to do with it
         """
         user_input = self.get_input()
+        global filter_on
+        global filter_string
 
         go_to_max = ord("9") if len(self.items) >= 9 else ord(str(len(self.items)))
 
         if ord('1') <= user_input <= go_to_max:
-            self.go_to(user_input - ord('0') - 1)
+            if filter_string == "":
+                self.go_to(user_input - ord('0') - 1)
+                filter_on = False
+            else:
+                filter_string_array.append(user_input)
+                filter_string = "".join(chr(i) for i in filter_string_array)
+
         elif user_input == curses.KEY_DOWN:
             self.go_down()
+            filter_on = False
         elif user_input == curses.KEY_UP:
             self.go_up()
-        elif user_input == ord("\n"):
-            self.select()
-        elif user_input == ord(" "):
+            filter_on = False
+
+        elif user_input == ord("s"):
             if self.use_multi():
                 self.current_item.choose_selection()
                 self.draw()
 
+        elif user_input == ord("\n"):
+            self.select()
+            filter_on = False
+        else:
+            curses.echo()
+            if user_input != 127:
+                filter_string_array.append(user_input)
+
+            if user_input == 127 and len(filter_string_array) != 0: #for delete
+                del filter_string_array[-1] #remove last character
+
+            filter_string = "".join(chr(i) for i in filter_string_array)
+
+        for x in range(0, len(names)):
+            if filter_string == names[x]:
+                filter_on = True
+                self.draw()
+
         return user_input
+
+
+
 
     def go_to(self, option):
         """
@@ -363,6 +401,7 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
+
         curses.init_pair(1, highlight_foreground_color, highlight_background_color)
         curses.init_pair(2, curses.COLOR_RED, font_background_color)
         curses.init_pair(3, curses.COLOR_GREEN, font_background_color)
@@ -380,6 +419,12 @@ class CursesMenu(object):
         """
         self.screen.clear()
 
+    def append_itemnames(self, item):
+        names.append(item.text)
+
+    def get_namesarray(self):
+        return names
+
     @staticmethod
     def use_multi():
         return False
@@ -387,12 +432,6 @@ class CursesMenu(object):
     @abc.abstractmethod
     def gather_selections(self):
         return
-
-    def append_itemnames(self, item):
-        names.append(item.text)
-
-    def get_namesarray(self):
-        return names
 
 
 class MenuItem(object):
@@ -428,7 +467,7 @@ class MenuItem(object):
         :return: The representation of the item to be shown in a menu
         :rtype: str
         """
-        return "%d - %s" % (index + 1, self.text)  # self.color
+        return "%d - %s" % (index + 1, self.text)
 
     def set_up(self):
         """
@@ -455,13 +494,6 @@ class MenuItem(object):
         """
         return self.menu.returned_value
 
-    @abc.abstractmethod
-    def choose_selection(self):
-        """
-         Abstract method for MultiItem.choose_selection()
-        """
-        return
-
     def get_foreground_text_color(self):
         if self.text_color == "RED":
             return 2
@@ -480,14 +512,17 @@ class MenuItem(object):
         else:
             return 8
 
+    @abc.abstractmethod
+    def choose_selection(self):
+        return
 
 class ExitItem(MenuItem):
     """
     Used to exit the current menu. Handled by :class:`cursesmenu.CursesMenu`
     """
 
-    def __init__(self, text_color="WHITE", text="Exit", menu=None):
-        super(ExitItem, self).__init__(text=text, text_color=text_color,
+    def __init__(self, text_color = "WHITE", text="Exit", menu=None):
+        super(ExitItem, self).__init__(text=text, text_color = text_color,
                                        menu=menu, should_exit=True)
 
     def show(self, index):
