@@ -1,3 +1,4 @@
+import abc
 import curses
 import os
 import platform
@@ -10,6 +11,8 @@ names = []
 filter_string_array = []
 filter_string = ""
 filter_on = False
+
+
 class CursesMenu(object):
     """
     A class that displays a menu and allows the user to select an option
@@ -44,7 +47,7 @@ class CursesMenu(object):
         self.screen = None
         self.highlight = None
         self.normal = None
-        #self.color = None
+        # self.color = None
 
         self.title = title
         self.subtitle = subtitle
@@ -279,6 +282,7 @@ class CursesMenu(object):
         """
         return CursesMenu.stdscr.getch()
 
+    # add user input here for multiSelect
     def process_user_input(self):
         """
         Gets the next single character and decides what to do with it
@@ -295,6 +299,10 @@ class CursesMenu(object):
             self.go_up()
         elif user_input == ord("\n"):
             self.select()
+        elif user_input == ord(" "):
+            if self.use_multi():
+                self.current_item.choose_selection()
+                self.draw()
 
         return user_input
 
@@ -336,7 +344,10 @@ class CursesMenu(object):
         self.selected_item.set_up()
         self.selected_item.action()
         self.selected_item.clean_up()
-        self.returned_value = self.selected_item.get_return()
+        if self.use_multi():
+            self.returned_value = self.gather_selections()
+        else:
+            self.returned_value = self.selected_item.get_return()
         self.should_exit = self.selected_item.should_exit
 
         if not self.should_exit:
@@ -366,6 +377,14 @@ class CursesMenu(object):
         Clear the screen belonging to this menu
         """
         self.screen.clear()
+
+    @staticmethod
+    def use_multi():
+        return False
+
+    @abc.abstractmethod
+    def gather_selections(self):
+        return
 
     def append_itemnames(self, item):
         names.append(item.text)
@@ -407,7 +426,7 @@ class MenuItem(object):
         :return: The representation of the item to be shown in a menu
         :rtype: str
         """
-        return "%d - %s" % (index + 1, self.text) #self.color
+        return "%d - %s" % (index + 1, self.text)  # self.color
 
     def set_up(self):
         """
@@ -434,6 +453,13 @@ class MenuItem(object):
         """
         return self.menu.returned_value
 
+    @abc.abstractmethod
+    def choose_selection(self):
+        """
+         Abstract method for MultiItem.choose_selection()
+        """
+        return
+
     def get_foreground_text_color(self):
         if self.text_color == "RED":
             return 2
@@ -458,8 +484,8 @@ class ExitItem(MenuItem):
     Used to exit the current menu. Handled by :class:`cursesmenu.CursesMenu`
     """
 
-    def __init__(self, text_color = "WHITE", text="Exit", menu=None):
-        super(ExitItem, self).__init__(text=text, text_color = text_color,
+    def __init__(self, text_color="WHITE", text="Exit", menu=None):
+        super(ExitItem, self).__init__(text=text, text_color=text_color,
                                        menu=menu, should_exit=True)
 
     def show(self, index):

@@ -1,5 +1,4 @@
 # Import the necessary packages
-import curses
 from cursesmenu import *
 from cursesmenu.items import *
 
@@ -25,11 +24,18 @@ selection_menu = SelectionMenu(["item1", "item2", "item3"])
 # as a submenu of another menu
 submenu_item = SubmenuItem("YELLOW" ,"Submenu item", selection_menu, menu)
 
+# A MultiMenu constructs a menu from a list of strings
+multi_menu = MultiMenu(["Item 1", "Item 2", "Item 3"])
+
+# A SubmenuItem used to create a menu within a menu using MultiMenu
+submenu_item2 = SubmenuItem("GREEN","Submenu Item 2", multi_menu, menu)
+
 # Once we're done creating them, we just add the items to the menu
 menu.append_item(menu_item)
 menu.append_item(function_item)
 menu.append_item(command_item)
 menu.append_item(submenu_item)
+menu.append_item(submenu_item2)
 
 
 # Finally, we call show to show the menu and allow the user to interact
