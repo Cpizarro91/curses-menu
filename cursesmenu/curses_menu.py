@@ -2,6 +2,7 @@ import curses
 import os
 import platform
 import threading
+import abc
 #from log import log
 
 font_background_color = curses.COLOR_CYAN
@@ -312,6 +313,11 @@ class CursesMenu(object):
             self.go_up()
             filter_on = False
 
+        elif user_input == ord(" "):
+            if self.use_multi():
+                self.current_item.choose_selection()
+                self.draw()
+
         elif user_input == ord("\n"):
             self.select()
             filter_on = False
@@ -383,7 +389,10 @@ class CursesMenu(object):
         self.selected_item.set_up()
         self.selected_item.action()
         self.selected_item.clean_up()
-        self.returned_value = self.selected_item.get_return()
+        if self.use_multi():
+            self.returned_value = self.gather_selections()
+        else:
+            self.returned_value = self.selected_item.get_return()
         self.should_exit = self.selected_item.should_exit
 
         if not self.should_exit:
@@ -420,6 +429,14 @@ class CursesMenu(object):
 
     def get_namesarray(self):
         return names
+
+    @staticmethod
+    def use_multi():
+        return False
+
+    @abc.abstractmethod
+    def gather_selections(self):
+        return
 
 
 class MenuItem(object):
@@ -500,6 +517,9 @@ class MenuItem(object):
         else:
             return 8
 
+    @abc.abstractmethod
+    def choose_selection(self):
+        return
 
 class ExitItem(MenuItem):
     """

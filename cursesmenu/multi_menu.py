@@ -25,9 +25,6 @@ class MultiMenu(CursesMenu):
                 list_of_selections.append(choice.text.replace("[X]", ""))
         return list_of_selections
 
-
-
-
     @staticmethod
     def use_multi():
         """
