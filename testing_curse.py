@@ -2,7 +2,6 @@
 from cursesmenu import *
 from cursesmenu.items import *
 
-names2 = []
 # Create the menu
 menu = CursesMenu("Title", "Subtitle")
 
@@ -26,9 +25,10 @@ submenu_item = SubmenuItem("YELLOW", "Submenu item", selection_menu, menu)
 
 # A MultiMenu constructs a menu from a list of strings
 multi_menu = MultiMenu(["Item 1", "Item 2", "Item 3"])
+#for filter you have to put in [ ]
 
 # A SubmenuItem used to create a menu within a menu using MultiMenu
-submenu_item2 = SubmenuItem("GREEN","Submenu Item 2", multi_menu, menu)
+submenu_item2 = SubmenuItem("GREEN", "Submenu Item 2", multi_menu, menu)
 
 # Once we're done creating them, we just add the items to the menu
 menu.append_item(menu_item)
