@@ -28,7 +28,7 @@ submenu_item = SubmenuItem("YELLOW", "Submenu item", selection_menu, menu)
 multi_menu = MultiMenu(["Item 1", "Item 2", "Item 3"])
 
 # A SubmenuItem used to create a menu within a menu using MultiMenu
-submenu_item2 = SubmenuItem("GREEN","Submenu Item 2", multi_menu, menu)
+submenu_item2 = SubmenuItem("RED","Submenu Item 2", multi_menu, menu)
 
 # Once we're done creating them, we just add the items to the menu
 menu.append_item(menu_item)

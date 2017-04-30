@@ -13,7 +13,7 @@ class MultiMenu(CursesMenu):
                  choices,
                  title=None,
                  subtitle="Use the space bar to select/unselect items and the enter key to finish",
-                 show_exit_option=False):
+                 show_exit_option=True):
         super(MultiMenu, self).__init__(title, subtitle, show_exit_option)
         for choice in choices:
             self.append_item(MultiItem("Main Menu", choice, self))
