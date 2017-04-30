@@ -1,11 +1,11 @@
-from .command_item import CommandItem
-from .external_item import ExternalItem
-from .function_item import FunctionItem
-from .multi_item import MultiItem
-from .selection_item import SelectionItem
-from .submenu_item import SubmenuItem
-from ..curses_menu import ExitItem
 from ..curses_menu import MenuItem
+from ..curses_menu import ExitItem
+from .external_item import ExternalItem
+from .command_item import CommandItem
+from .function_item import FunctionItem
+from .selection_item import SelectionItem
+from .multi_item import MultiItem
+from .submenu_item import SubmenuItem
 
 __all__ = ['CommandItem',
            'ExitItem',

@@ -22,7 +22,7 @@ selection_menu = SelectionMenu(["item1", "item2", "item3"])
 
 # A SubmenuItem lets you add a menu (the selection_menu above, for example)
 # as a submenu of another menu
-submenu_item = SubmenuItem("YELLOW" ,"Submenu item", selection_menu, menu)
+submenu_item = SubmenuItem("YELLOW", "Submenu item", selection_menu, menu)
 
 # A MultiMenu constructs a menu from a list of strings
 multi_menu = MultiMenu(["Item 1", "Item 2", "Item 3"])

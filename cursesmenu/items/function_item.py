@@ -6,7 +6,7 @@ class FunctionItem(ExternalItem):
     A menu item to call a Python function
     """
 
-    def __init__(self, text_color,text,  function, args=None, kwargs=None, menu=None, should_exit=False):
+    def __init__(self, text_color, text,  function, args=None, kwargs=None, menu=None, should_exit=False):
         """
         :ivar function: The function to be called
         :ivar list args: An optional list of arguments to be passed to the function
