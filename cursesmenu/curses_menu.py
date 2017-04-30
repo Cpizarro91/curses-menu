@@ -2,9 +2,7 @@ import curses
 import os
 import platform
 import threading
-import abc
 #from log import log
-
 
 font_background_color = curses.COLOR_CYAN
 highlight_foreground_color = curses.COLOR_BLUE
@@ -196,7 +194,7 @@ class CursesMenu(object):
             CursesMenu.stdscr = scr
         self.screen = curses.newpad(len(self.items) + 6, CursesMenu.stdscr.getmaxyx()[1])
         self._set_up_colors()
-        curses.curs_set(0)
+        curses.curs_set(1)
         CursesMenu.stdscr.refresh()
         self.draw()
         CursesMenu.currently_active_menu = self
@@ -318,16 +316,11 @@ class CursesMenu(object):
             self.go_up()
             filter_on = False
 
-        elif user_input == ord(" "):
-            if self.use_multi():
-                self.current_item.choose_selection()
-                self.draw()
-
         elif user_input == ord("\n"):
             self.select()
             filter_on = False
+
         else:
-            curses.echo()
             if user_input != 127:
                 filter_string_array.append(user_input)
 
@@ -336,15 +329,19 @@ class CursesMenu(object):
 
             filter_string = "".join(chr(i) for i in filter_string_array)
 
+            screen_rows, screen_cols = CursesMenu.stdscr.getmaxyx()
+            top_row = 0
+
+            for x in range(0, len(filter_string)):
+                self.screen.addstr(1, x+1, filter_string[x])
+                self.screen.refresh(top_row, 0, 0, 0, screen_rows - 1, screen_cols - 1)
+
         for x in range(0, len(names)):
             if filter_string == names[x]:
                 filter_on = True
                 self.draw()
 
         return user_input
-
-
-
 
     def go_to(self, option):
         """
@@ -384,10 +381,7 @@ class CursesMenu(object):
         self.selected_item.set_up()
         self.selected_item.action()
         self.selected_item.clean_up()
-        if self.use_multi():
-            self.returned_value = self.gather_selections()
-        else:
-            self.returned_value = self.selected_item.get_return()
+        self.returned_value = self.selected_item.get_return()
         self.should_exit = self.selected_item.should_exit
 
         if not self.should_exit:
@@ -424,14 +418,6 @@ class CursesMenu(object):
 
     def get_namesarray(self):
         return names
-
-    @staticmethod
-    def use_multi():
-        return False
-
-    @abc.abstractmethod
-    def gather_selections(self):
-        return
 
 
 class MenuItem(object):
@@ -512,9 +498,6 @@ class MenuItem(object):
         else:
             return 8
 
-    @abc.abstractmethod
-    def choose_selection(self):
-        return
 
 class ExitItem(MenuItem):
     """
