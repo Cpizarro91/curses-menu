@@ -21,7 +21,7 @@ class MultiMenu(CursesMenu):
     def gather_selections(self):
         list_of_selections = []
         for choice in self.items:
-            if choise.selected:
+            if choice.selected:
                 list_of_selections.append(choice.text.replace("[X]", ""))
         return list_of_selections
 
