@@ -2,7 +2,7 @@ import curses
 import os
 import platform
 import threading
-#from log import log
+from log import log
 
 font_background_color = curses.COLOR_CYAN
 highlight_foreground_color = curses.COLOR_BLUE
@@ -210,10 +210,10 @@ class CursesMenu(object):
         if filter_on:
             for index, item in enumerate(self.items):
                 if item.text == filter_string:
-                    something = self.items[index]
+                    filtered_item = self.items[index]
                     exit_item = self.items.pop()
                     del self.items[:]
-                    self.items.append(something)
+                    self.items.append(filtered_item)
                     self.items.append(exit_item)
                     self.clear_screen()
 
@@ -302,8 +302,12 @@ class CursesMenu(object):
         go_to_max = ord("9") if len(self.items) >= 9 else ord(str(len(self.items)))
 
         if ord('1') <= user_input <= go_to_max:
-            self.go_to(user_input - ord('0') - 1)
-            filter_on = False
+            if filter_string == "":
+                self.go_to(user_input - ord('0') - 1)
+                filter_on = False
+            else:
+                filter_string_array.append(user_input)
+                filter_string = "".join(chr(i) for i in filter_string_array)
 
         elif user_input == curses.KEY_DOWN:
             self.go_down()
@@ -316,31 +320,22 @@ class CursesMenu(object):
             self.select()
             filter_on = False
         else:
-
             curses.echo()
-            #I need to modify this to take numbers
-            #If I right item1 and put in the one it will call the part to go to item 1 on the menu
-            #instead of just adding it to the string
             if user_input != 127:
-                filter_string_array.append(user_input)#its appending the delete first thats why it looks like its not deleting anything
-                #filter_string = "".join(chr(i) for i in filter_string_array)
+                filter_string_array.append(user_input)
 
             if user_input == 127 and len(filter_string_array) != 0: #for delete
-                #check if array is empty, if is do nothing, if not delete character
                 del filter_string_array[-1] #remove last character
-                #filter_string = "".join(chr(i) for i in filter_string_array)
 
             filter_string = "".join(chr(i) for i in filter_string_array)
-            #log.info("filter string", filter_string)
-            #log.info(names) #exit is not in here
-            for x in range(0, len(names)):
-                if filter_string == names[x]:
 
-                    #make new array to pass that items name into and then append that name to menu?
-                    #maybe global boolean
-                    filter_on = True
-                    #log.info("filter string", filter_string)
-                    self.draw()
+        for x in range(0, len(names)):
+            if filter_string == names[x]:
+                log.info(filter_string)
+                filter_on = True
+                self.draw()
+
+        return user_input
 
 
 
