@@ -3,7 +3,6 @@ import os
 import platform
 import threading
 import abc
-#from log import log
 
 
 font_background_color = curses.COLOR_CYAN
@@ -48,7 +47,6 @@ class CursesMenu(object):
         self.screen = None
         self.highlight = None
         self.normal = None
-        #self.color = None
 
         self.title = title
         self.subtitle = subtitle
@@ -335,8 +333,8 @@ class CursesMenu(object):
             if user_input != 127:
                 filter_string_array.append(user_input)
 
-            if user_input == 127 and len(filter_string_array) != 0: #for delete
-                del filter_string_array[-1] #remove last character
+            if user_input == 127 and len(filter_string_array) != 0:
+                del filter_string_array[-1]
 
             filter_string = "".join(chr(i) for i in filter_string_array)
 
