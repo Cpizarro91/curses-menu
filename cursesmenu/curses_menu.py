@@ -196,7 +196,7 @@ class CursesMenu(object):
             CursesMenu.stdscr = scr
         self.screen = curses.newpad(len(self.items) + 6, CursesMenu.stdscr.getmaxyx()[1])
         self._set_up_colors()
-        curses.curs_set(0)
+        curses.curs_set(1)
         CursesMenu.stdscr.refresh()
         self.draw()
         CursesMenu.currently_active_menu = self
@@ -298,6 +298,8 @@ class CursesMenu(object):
         Gets the next single character and decides what to do with it
         """
         user_input = self.get_input()
+        screen_rows, screen_cols = CursesMenu.stdscr.getmaxyx()
+        top_row = 0
         global filter_on
         global filter_string
 
@@ -306,28 +308,30 @@ class CursesMenu(object):
         if ord('1') <= user_input <= go_to_max:
             if filter_string == "":
                 self.go_to(user_input - ord('0') - 1)
-                filter_on = False
             else:
                 filter_string_array.append(user_input)
                 filter_string = "".join(chr(i) for i in filter_string_array)
 
         elif user_input == curses.KEY_DOWN:
             self.go_down()
-            filter_on = False
+
         elif user_input == curses.KEY_UP:
             self.go_up()
-            filter_on = False
 
         elif user_input == ord("s"):
             if self.use_multi():
+                filter_string_array.append(user_input)
+                filter_string = "".join(chr(i) for i in filter_string_array)
                 self.current_item.choose_selection()
                 self.draw()
+            else:
+                filter_string_array.append(user_input)
+                filter_string = "".join(chr(i) for i in filter_string_array)
 
         elif user_input == ord("\n"):
             self.select()
-            filter_on = False
+
         else:
-            curses.echo()
             if user_input != 127:
                 filter_string_array.append(user_input)
 
@@ -336,15 +340,16 @@ class CursesMenu(object):
 
             filter_string = "".join(chr(i) for i in filter_string_array)
 
+        for x in range(0, len(filter_string)):
+            self.screen.addstr(1, x+1, filter_string[x])
+            self.screen.refresh(top_row, 0, 0, 0, screen_rows - 1, screen_cols - 1)
+
         for x in range(0, len(names)):
             if filter_string == names[x]:
                 filter_on = True
                 self.draw()
 
         return user_input
-
-
-
 
     def go_to(self, option):
         """
