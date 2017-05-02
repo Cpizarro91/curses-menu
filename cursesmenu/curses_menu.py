@@ -5,9 +5,10 @@ import threading
 import abc
 
 
-font_background_color = curses.COLOR_BLACK
-highlight_foreground_color = curses.COLOR_BLUE
-highlight_background_color = curses.COLOR_YELLOW
+font_background_color = "cyan"
+highlight_foreground_color = "blue"
+highlight_background_color = "yellow"
+exit_color = "BLue"
 names = []
 filter_string_array = []
 filter_string = ""
@@ -404,17 +405,79 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
-
-        curses.init_pair(1, highlight_foreground_color, highlight_background_color)
-        curses.init_pair(2, curses.COLOR_RED, font_background_color)
-        curses.init_pair(3, curses.COLOR_GREEN, font_background_color)
-        curses.init_pair(4, curses.COLOR_YELLOW, font_background_color)
-        curses.init_pair(5, curses.COLOR_BLUE, font_background_color)
-        curses.init_pair(6, curses.COLOR_MAGENTA, font_background_color)
-        curses.init_pair(7, curses.COLOR_CYAN, font_background_color)
-        curses.init_pair(8, curses.COLOR_WHITE, font_background_color)
+        highlight_foreground_color2 = self.get_highlight_foreground_color()
+        highlight_background_color2 = self.get_highlight_background_color()
+        font_background_color2 = self.get_font_background_color()
+        curses.init_pair(1, highlight_foreground_color2, highlight_background_color2)
+        curses.init_pair(2, curses.COLOR_RED, font_background_color2)
+        curses.init_pair(3, curses.COLOR_GREEN, font_background_color2)
+        curses.init_pair(4, curses.COLOR_YELLOW, font_background_color2)
+        curses.init_pair(5, curses.COLOR_BLUE, font_background_color2)
+        curses.init_pair(6, curses.COLOR_MAGENTA, font_background_color2)
+        curses.init_pair(7, curses.COLOR_CYAN, font_background_color2)
+        curses.init_pair(8, curses.COLOR_WHITE, font_background_color2)
         self.highlight = curses.color_pair(1)
         self.normal = curses.A_NORMAL
+
+    def get_font_background_color(self):
+        global font_background_color
+        font_background_color = font_background_color.lower()
+        if font_background_color == "red":
+            return curses.COLOR_RED
+        elif font_background_color == "green":
+            return curses.COLOR_GREEN
+        elif font_background_color == "yellow":
+            return curses.COLOR_YELLOW
+        elif font_background_color == "blue":
+            return curses.COLOR_BLUE
+        elif font_background_color == "magenta":
+            return curses.COLOR_MAGENTA
+        elif font_background_color == "cyan":
+            return curses.COLOR_CYAN
+        elif font_background_color == "white":
+            return curses.COLOR_WHITE
+        else:
+            return curses.COLOR_WHITE
+
+    def get_highlight_background_color(self):
+        global highlight_background_color
+        highlight_background_color = highlight_background_color.lower()
+        if highlight_background_color == "red":
+            return curses.COLOR_RED
+        elif highlight_background_color == "green":
+            return curses.COLOR_GREEN
+        elif highlight_background_color == "yellow":
+            return curses.COLOR_YELLOW
+        elif highlight_background_color == "blue":
+            return curses.COLOR_BLUE
+        elif highlight_background_color == "magenta":
+            return curses.COLOR_MAGENTA
+        elif highlight_background_color == "cyan":
+            return curses.COLOR_CYAN
+        elif highlight_background_color == "white":
+            return curses.COLOR_WHITE
+        else:
+            return curses.COLOR_WHITE
+
+    def get_highlight_foreground_color(self):
+        global highlight_foreground_color
+        highlight_foreground_color = highlight_foreground_color.lower()
+        if highlight_foreground_color == "red":
+            return curses.COLOR_RED
+        elif highlight_foreground_color == "green":
+            return curses.COLOR_GREEN
+        elif highlight_foreground_color == "yellow":
+            return curses.COLOR_YELLOW
+        elif highlight_foreground_color == "blue":
+            return curses.COLOR_BLUE
+        elif highlight_foreground_color == "magenta":
+            return curses.COLOR_MAGENTA
+        elif highlight_foreground_color == "cyan":
+            return curses.COLOR_CYAN
+        elif highlight_foreground_color == "white":
+            return curses.COLOR_WHITE
+        else:
+            return curses.COLOR_WHITE
 
     def clear_screen(self):
         """
@@ -525,7 +588,7 @@ class ExitItem(MenuItem):
     Used to exit the current menu. Handled by :class:`cursesmenu.CursesMenu`
     """
 
-    def __init__(self, text_color = "WHITE", text="Exit", menu=None):
+    def __init__(self, text_color=exit_color, text="Exit", menu=None):
         super(ExitItem, self).__init__(text=text, text_color = text_color,
                                        menu=menu, should_exit=True)
 
