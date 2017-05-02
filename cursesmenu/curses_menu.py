@@ -405,17 +405,17 @@ class CursesMenu(object):
         self.join()
 
     def _set_up_colors(self):
-        highlight_foreground_color2 = self.get_highlight_foreground_color()
-        highlight_background_color2 = self.get_highlight_background_color()
-        font_background_color2 = self.get_font_background_color()
-        curses.init_pair(1, highlight_foreground_color2, highlight_background_color2)
-        curses.init_pair(2, curses.COLOR_RED, font_background_color2)
-        curses.init_pair(3, curses.COLOR_GREEN, font_background_color2)
-        curses.init_pair(4, curses.COLOR_YELLOW, font_background_color2)
-        curses.init_pair(5, curses.COLOR_BLUE, font_background_color2)
-        curses.init_pair(6, curses.COLOR_MAGENTA, font_background_color2)
-        curses.init_pair(7, curses.COLOR_CYAN, font_background_color2)
-        curses.init_pair(8, curses.COLOR_WHITE, font_background_color2)
+        curses_highlight_foreground_color = self.get_highlight_foreground_color()
+        curses_highlight_background_color = self.get_highlight_background_color()
+        curses_font_background_color = self.get_font_background_color()
+        curses.init_pair(1, curses_highlight_foreground_color, curses_highlight_background_color)
+        curses.init_pair(2, curses.COLOR_RED, curses_font_background_color)
+        curses.init_pair(3, curses.COLOR_GREEN, curses_font_background_color)
+        curses.init_pair(4, curses.COLOR_YELLOW, curses_font_background_color)
+        curses.init_pair(5, curses.COLOR_BLUE, curses_font_background_color)
+        curses.init_pair(6, curses.COLOR_MAGENTA, curses_font_background_color)
+        curses.init_pair(7, curses.COLOR_CYAN, curses_font_background_color)
+        curses.init_pair(8, curses.COLOR_WHITE, curses_font_background_color)
         self.highlight = curses.color_pair(1)
         self.normal = curses.A_NORMAL
 
