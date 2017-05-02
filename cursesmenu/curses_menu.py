@@ -14,6 +14,7 @@ filter_string_array = []
 filter_string = ""
 filter_on = False
 
+
 class CursesMenu(object):
     """
     A class that displays a menu and allows the user to select an option
