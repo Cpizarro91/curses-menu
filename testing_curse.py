@@ -3,15 +3,15 @@ from cursesmenu import *
 from cursesmenu.items import *
 
 # Create the menu
-menu = CursesMenu("Title", "Subtitle")
+menu = CursesMenu("Title", "Subtitle") #548,80 to 112,30
 
 # Create some items
 
 # MenuItem is the base class for all items, it doesn't do anything when selected
-menu_item = MenuItem("RED", "Menu Item" )
+menu_item = MenuItem("REd", "Menu Item" )
 
 # A FunctionItem runs a Python function when selected
-function_item = FunctionItem("BLUE","Call a Python function", input, ["Enter an input"])
+function_item = FunctionItem("Blue","Call a Python function", input, ["Enter an input"])
 
 # A CommandItem runs a console command
 command_item = CommandItem("MAGENTA","Run a console command", "touch hello.txt")

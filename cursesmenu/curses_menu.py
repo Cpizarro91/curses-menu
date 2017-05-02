@@ -5,7 +5,7 @@ import threading
 import abc
 
 
-font_background_color = curses.COLOR_CYAN
+font_background_color = curses.COLOR_BLACK
 highlight_foreground_color = curses.COLOR_BLUE
 highlight_background_color = curses.COLOR_YELLOW
 names = []
@@ -498,19 +498,20 @@ class MenuItem(object):
         return self.menu.returned_value
 
     def get_foreground_text_color(self):
-        if self.text_color == "RED":
+        self.text_color = self.text_color.lower()
+        if self.text_color == "red":
             return 2
-        elif self.text_color == "GREEN":
+        elif self.text_color == "green":
             return 3
-        elif self.text_color == "YELLOW":
+        elif self.text_color == "yellow":
             return 4
-        elif self.text_color == "BLUE":
+        elif self.text_color == "blue":
             return 5
-        elif self.text_color == "MAGENTA":
+        elif self.text_color == "magenta":
             return 6
-        elif self.text_color == "CYAN":
+        elif self.text_color == "cyan":
             return 7
-        elif self.text_color == "WHITE":
+        elif self.text_color == "white":
             return 8
         else:
             return 8
