@@ -489,9 +489,6 @@ class CursesMenu(object):
     def append_itemnames(self, item):
         names.append(item.text)
 
-    def get_namesarray(self):
-        return names
-
     @staticmethod
     def use_multi():
         return False
