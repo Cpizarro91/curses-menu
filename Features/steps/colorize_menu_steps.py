@@ -5,7 +5,7 @@ from behave import *
 from hamcrest import *
 from cursesmenu import *
 from cursesmenu.items import *
-from features.compare_images import equal
+from Features.compare_images import equal
 
 @given("that colors are enabled on your terminal")
 def step_impl(context):
@@ -33,14 +33,14 @@ def step_impl(context):
 
 @given("that colors are enabled on your terminal shell")
 def step_impl(context):
-    curses.initscr()
+    #do not initialize menu again here as it's already initialized above
     colors_is_on = True
     if not curses.has_colors():
         assert_that(colors_is_on, False)
     else:
         assert_that(colors_is_on, True)
 
-@when("you create each individual menu item")
+@when("you create each individual menu item with specific colors")
 def step_impl(context):
     menu = CursesMenu("Title", "Subtitle")
     menu_item = MenuItem("RED", "Menu Item" )
