@@ -7,6 +7,7 @@ class MultiItem(MenuItem):
         self.selected = False
         self.text = "[ ]" + self.text
 
+
     def choose_selection(self):
         if self.selected:
             self.selected = False
@@ -15,7 +16,11 @@ class MultiItem(MenuItem):
             self.selected = True
             self.text = self.text.replace("[ ]", "[X]")
 
-    #def choice_selected(self):
-    #    return self.selected
+    def choice_selected(self):
+        return self.selected
 
-
+    def get_selected(self):
+        if self.choice_selected():
+            return self.text.replace("[X]", "[ ]")
+        else:
+            return self.text.replace("[ ]", "[X]")

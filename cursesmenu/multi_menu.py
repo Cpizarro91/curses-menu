@@ -12,7 +12,7 @@ class MultiMenu(CursesMenu):
     def __init__(self,
                  choices,
                  title=None,
-                 subtitle="Use the space bar to select/unselect items and the enter key to finish",
+                 subtitle="Use the 's' key to select/unselect items and the enter key to finish",
                  show_exit_option=True):
         super(MultiMenu, self).__init__(title, subtitle, show_exit_option)
         for choice in choices:
@@ -21,8 +21,10 @@ class MultiMenu(CursesMenu):
     def gather_selections(self):
         list_of_selections = []
         for choice in self.items:
-            if choice.selected:
-                list_of_selections.append(choice.text.replace("[X]", ""))
+          #  if choice.selected:
+          #      list_of_selections.append(choice.text.replace("[X]", ""))
+            if choice.choice_selected():
+                list_of_selections.append(choice.get_selected())
         return list_of_selections
 
     @staticmethod

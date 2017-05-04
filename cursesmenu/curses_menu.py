@@ -493,9 +493,9 @@ class CursesMenu(object):
     def use_multi():
         return False
 
-    @abc.abstractmethod
-    def gather_selections(self):
-        return
+   # @abc.abstractmethod
+   # def gather_selections(self):
+   #     return
 
 
 class MenuItem(object):
@@ -577,9 +577,9 @@ class MenuItem(object):
         else:
             return 8
 
-    @abc.abstractmethod
-    def choose_selection(self):
-        return
+    #@abc.abstractmethod
+    #def choose_selection(self):
+    #    return
 
 class ExitItem(MenuItem):
     """
