@@ -5,8 +5,7 @@ from cursesmenu.items import MultiItem
 
 @given("a multi-selection menu with three items")
 def step_impl(context):
-    context.total = []
-    context.menu = MultiMenu("Title", ["Item", "Thing", "Other thing"])
+    context.menu = MultiMenu(["Item", "Thing", "Other thing"])
     context.menu.show()
     pass
 
@@ -23,8 +22,7 @@ def step_impl(context):
 
 @given("a multi-selection menu with two items")
 def step_impl(context):
-    context.total = []
-    context.menu = MultiMenu("Title", ["Item", "Thing"])
+    context.menu = MultiMenu(["Item", "Thing"])
     context.menu.show()
     pass
 
@@ -44,8 +42,7 @@ def step_impl(context):
 
 @given("a multi-selection menu with two out of three items selected")
 def step_impl(context):
-    context.total = []
-    context.menu = MultiMenu("Title", ["Item", "Thing"])
+    context.menu = MultiMenu(["Item", "Thing"])
     context.menu.show()
     context.menu.items[0].choose_selection()
     context.menu.items[1].choose_selection()
