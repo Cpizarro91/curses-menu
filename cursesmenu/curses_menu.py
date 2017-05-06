@@ -480,6 +480,15 @@ class CursesMenu(object):
         else:
             return curses.COLOR_WHITE
 
+    def get_root_menu_name(self):
+        return self.title
+
+    def get_root_menu_subtitle(self):
+        return self.subtitle
+
+    def get_items(self):
+        return self.items
+
     def clear_screen(self):
         """
         Clear the screen belonging to this menu
@@ -576,6 +585,9 @@ class MenuItem(object):
             return 8
         else:
             return 8
+
+    def get_text(self):
+        return self.text
 
     #@abc.abstractmethod
     #def choose_selection(self):

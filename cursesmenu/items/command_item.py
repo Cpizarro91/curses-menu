@@ -41,3 +41,6 @@ class CommandItem(ExternalItem):
         :rtype: int
         """
         return self.exit_status
+
+    def get_command(self):
+        return self.command

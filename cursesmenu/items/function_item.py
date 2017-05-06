@@ -40,3 +40,6 @@ class FunctionItem(ExternalItem):
         :return: The return value from the function call
         """
         return self.return_value
+
+    def get_function(self):
+        return self.function

@@ -1,6 +1,6 @@
 #thank you to Nllesh Sharma on stackoverflow for majority of this function
-import ImageChops
-import Image
+from PIL import Image
+from PIL import ImageChops
 
 def equal(im1, im2):
     im1 = Image.open(im1)
